@@ -1,5 +1,5 @@
 import sys
-import qvac
+from tetherto.qvac_sdk import loadModel, completion
 
 def run_app():
     print("========================================")
@@ -8,7 +8,7 @@ def run_app():
     
     # Required by Challenge: Call loadModel
     print("[1/3] Loading local model into memory...")
-    model = qvac.loadModel("qwen2.5-0.5b-instruct")
+    model = loadModel("qwen2.5-0.5b-instruct")
     print("[✓] Model loaded on-device successfully.")
     
     # Prompt input
@@ -19,7 +19,7 @@ def run_app():
 
     print("\n[2/3] Running local inference on-device...")
     # Required by Challenge: Call completion
-    response = qvac.completion(
+    response = completion(
         model=model,
         prompt=f"You are a study assistant. Analyze this note and give structured bullet points:\n{prompt}",
         max_tokens=150
@@ -27,7 +27,10 @@ def run_app():
 
     print("\n[3/3] AI Output:")
     print("----------------------------------------")
-    print(response.get("text", response))
+    if isinstance(response, dict):
+        print(response.get("text", response))
+    else:
+        print(response)
     print("----------------------------------------")
 
 if __name__ == "__main__":
